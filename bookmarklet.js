@@ -4,19 +4,19 @@ javascript: (function () {
         window.sq.closed === false &&
         typeof window.sq.version !== "undefined"
     ) {
-        window.document.dispatchEvent(
-            new CustomEvent("squirt.again")
-        ); /* Use CustomEvent for better compatibility */
+        window.document.dispatchEvent(new CustomEvent("squirt.again"));
     } else {
         window.sq = window.sq || {};
         var scriptId = "squirtBookmarkletScript";
         var existingScript = document.getElementById(scriptId);
         if (existingScript) existingScript.remove();
 
+        // !!! UPDATED FOR JSDELIVR !!!
+        // Replace 'elouangrimm/squirt' with your GitHub username/repo
         var scriptSrc =
-            "https://elouangrimm.github.io/squirt/squirt.js"; /* ADJUST THIS IF YOUR URL IS DIFFERENT */
-        var devHostMatch = window.location.search.match(/sq-dev=([^&]+)/);
+            "https://cdn.jsdelivr.net/gh/elouangrimm/squirt/squirt.js";
 
+        var devHostMatch = window.location.search.match(/sq-dev=([^&]+)/);
         if (devHostMatch && devHostMatch[1]) {
             var devHost = devHostMatch[1];
             var protocol =
@@ -24,6 +24,7 @@ javascript: (function () {
                 devHost.startsWith("127.0.0.1")
                     ? "http://"
                     : "https://";
+            // For local dev, still load directly, not via jsDelivr
             scriptSrc =
                 protocol +
                 devHost +

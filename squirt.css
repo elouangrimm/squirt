@@ -1,4 +1,4 @@
-/* squirt.css - Material 3 Inspired Theme */
+/* squirt.css - Material 3 Inspired Theme (Updated) */
 
 :root {
     --sq-font-family: 'Roboto', 'Segoe UI', BlinkMacSystemFont, system-ui, -apple-system, sans-serif;
@@ -17,15 +17,17 @@
     --sq-accent-on-primary-light: #ffffff;
     /* Material 3 On Primary */
     --sq-focus-indicator-light: #cf1020;
-    /* Vivid Red */
-    --sq-outline-light: #79747e;
-    /* Material 3 Outline */
-    --sq-modal-shadow-light: 0 1px 2px rgba(0, 0, 0, 0.3), 0 2px 6px 2px rgba(0, 0, 0, 0.15);
-    /* M3 Elevation 2 */
+    /* Vivid Red for ORP */
+    --sq-outline-light: #cac4d0;
+    /* Material 3 Outline (lighter than variant) */
+    --sq-modal-shadow-light: 0 1px 3px rgba(0, 0, 0, 0.1), 0 4px 8px 2px rgba(0, 0, 0, 0.08);
+    /* M3 Elevation 3 */
+    --sq-control-hover-bg-light: rgba(0, 0, 0, 0.08);
+    /* M3 State Layer Opacity */
 
     /* Dark Mode */
-    --sq-bg-primary-dark: #1d1b20;
-    /* Material 3 Surface */
+    --sq-bg-primary-dark: #141218;
+    /* Material 3 Surface (darker) */
     --sq-bg-secondary-dark: #4a4458;
     /* Material 3 Secondary Container */
     --sq-text-primary-dark: #e6e0e9;
@@ -37,11 +39,13 @@
     --sq-accent-on-primary-dark: #381e72;
     /* Material 3 On Primary */
     --sq-focus-indicator-dark: #ff8a80;
-    /* Lighter Red */
-    --sq-outline-dark: #938f99;
-    /* Material 3 Outline */
-    --sq-modal-shadow-dark: 0 1px 2px rgba(0, 0, 0, 0.3), 0 2px 6px 2px rgba(0, 0, 0, 0.15);
-    /* M3 Elevation 2 (often same for dark) */
+    /* Lighter Red for ORP */
+    --sq-outline-dark: #49454f;
+    /* Material 3 Outline (darker) */
+    --sq-modal-shadow-dark: 0 1px 3px rgba(0, 0, 0, 0.25), 0 4px 8px 2px rgba(0, 0, 0, 0.2);
+    /* M3 Elevation 3 (dark) */
+    --sq-control-hover-bg-dark: rgba(255, 255, 255, 0.12);
+    /* M3 State Layer Opacity */
 
     --sq-blur-opacity: 0.3;
 }
@@ -49,9 +53,7 @@
 .sq {
     font-family: var(--sq-font-family);
     color-scheme: light dark;
-    /* Allow browser to style scrollbars etc. */
 
-    /* Default to light mode variables */
     --current-sq-bg-primary: var(--sq-bg-primary-light);
     --current-sq-bg-secondary: var(--sq-bg-secondary-light);
     --current-sq-text-primary: var(--sq-text-primary-light);
@@ -61,6 +63,7 @@
     --current-sq-focus-indicator: var(--sq-focus-indicator-light);
     --current-sq-outline: var(--sq-outline-light);
     --current-sq-modal-shadow: var(--sq-modal-shadow-light);
+    --current-sq-control-hover-bg: var(--sq-control-hover-bg-light);
 }
 
 .sq.dark-theme-active {
@@ -73,6 +76,7 @@
     --current-sq-focus-indicator: var(--sq-focus-indicator-dark);
     --current-sq-outline: var(--sq-outline-dark);
     --current-sq-modal-shadow: var(--sq-modal-shadow-dark);
+    --current-sq-control-hover-bg: var(--sq-control-hover-bg-dark);
 }
 
 .sq-obscure {
@@ -83,7 +87,6 @@
     height: 100%;
     background-color: rgba(0, 0, 0, var(--sq-blur-opacity));
     z-index: 2147483640;
-    /* High z-index */
 }
 
 .sq .modal {
@@ -92,16 +95,19 @@
     left: 50%;
     transform: translateX(-50%);
     width: 90%;
-    max-width: 420px;
+    max-width: 400px;
+    /* Slightly narrower for a more "focused" feel */
     background-color: var(--current-sq-bg-primary);
     color: var(--current-sq-text-primary);
     border-radius: 28px;
+    /* M3 Large radius */
     box-shadow: var(--current-sq-modal-shadow);
     z-index: 2147483641;
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    /* To contain rounded corners with children */
+    min-height: 180px;
+    /* Adjusted min height */
 }
 
 .sq .reader {
@@ -110,54 +116,48 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    padding: 24px;
-    min-height: 120px;
-    /* Ensure space for word */
+    padding: 20px 24px;
+    /* Adjusted padding */
     position: relative;
 }
 
 .sq .word-container {
-    font-size: 40px;
-    /* Large, clear text */
+    font-size: 38px;
+    /* Slightly smaller for balance */
     font-weight: 400;
-    /* Normal weight for readability */
     line-height: 1.2;
     position: relative;
-    height: 60px;
-    /* Fixed height to prevent layout jumps */
+    height: 55px;
     display: flex;
     align-items: center;
     justify-content: center;
     width: 100%;
-    margin-bottom: 10px;
+    margin-bottom: 15px;
+    /* Increased margin */
     color: var(--current-sq-text-primary);
 }
 
 .sq .word-container .word {
     position: absolute;
-    /* JS will set left position */
     white-space: nowrap;
     display: flex;
-    /* For ORP alignment within the word itself */
     align-items: baseline;
 }
 
 .sq .word-container .word .orp {
     color: var(--current-sq-focus-indicator);
     font-weight: 500;
-    /* Slightly bolder ORP */
 }
 
 .sq .word-container .focus-indicator-gap {
     position: absolute;
     width: 2px;
-    /* Thickness of the indicator */
-    height: 70%;
-    /* Relative to word-container height */
+    height: 60%;
+    /* Slightly shorter indicator */
     background-color: var(--current-sq-focus-indicator);
     left: 50%;
-    top: 15%;
-    /* Vertically center it a bit */
+    top: 20%;
+    /* Adjusted top */
     transform: translateX(-50%);
     border-radius: 1px;
 }
@@ -167,13 +167,12 @@
     position: absolute;
     top: -9999px;
     left: -9999px;
-    font-size: 40px;
-    /* Match .word-container */
+    font-size: 38px;
     font-weight: 400;
 }
 
 .sq .final-word {
-    padding: 20px;
+    padding: 24px;
     text-align: center;
     font-size: 16px;
     color: var(--current-sq-text-secondary);
@@ -181,109 +180,100 @@
 
 .sq .final-word .error {
     color: var(--current-sq-focus-indicator);
-    /* Use focus color for errors */
     font-weight: 500;
 }
 
-
 .sq .keyboard-shortcuts {
     position: absolute;
-    bottom: 12px;
+    bottom: 10px;
     left: 0;
     right: 0;
     text-align: center;
     font-size: 12px;
     color: var(--current-sq-text-secondary);
-    opacity: 0.8;
+    opacity: 0.7;
 }
 
 .sq .controls {
     display: flex;
     justify-content: space-around;
     align-items: center;
-    padding: 8px 12px;
+    padding: 12px 16px;
+    /* Increased padding */
     background-color: var(--current-sq-bg-secondary);
+    /* Controls background */
     border-top: 1px solid var(--current-sq-outline);
-    /* Subtle separator */
     flex-shrink: 0;
+    height: 64px;
+    /* M3 Bottom App Bar common height */
 }
 
-.sq .controls .control {
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    user-select: none;
+/* WPM Display (Not a button) */
+.sq .controls .wpm-display {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--current-sq-accent-primary);
     padding: 8px 12px;
-    border-radius: 20px;
-    /* Pill shape */
-    transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
-    min-width: 80px;
-    /* Ensure buttons have some width */
+    user-select: none;
+    min-width: 90px;
+    /* Ensure enough space */
     text-align: center;
 }
 
-.sq .controls .control a {
-    text-decoration: none;
-    color: var(--current-sq-text-secondary);
+/* Pause/Play Button */
+.sq .controls .control.pause-play {
+    /* This is the only button now, can take more space or be centered */
+    flex-grow: 1;
+    /* Allow it to take available space if needed or center it */
     display: flex;
-    align-items: center;
-    gap: 6px;
-    /* Space between icon and text */
-    font-size: 14px;
+    justify-content: center;
 }
 
-.sq .controls .control:hover {
-    background-color: rgba(0, 0, 0, 0.08);
-    /* Generic hover, works for light/dark */
-}
-
-.sq.dark-theme-active .controls .control:hover {
-    background-color: rgba(255, 255, 255, 0.12);
-}
-
-
-.sq .controls .control.wpm a {
-    color: var(--current-sq-accent-primary);
-    font-weight: 500;
-}
-
-.sq .wpm-selector {
-    position: absolute;
-    bottom: calc(100% + 8px);
-    /* Position above the controls bar */
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 100;
-    /* Above controls */
-    min-width: 180px;
-    background-color: var(--current-sq-bg-primary);
-    border-radius: 12px;
-    box-shadow: var(--current-sq-modal-shadow);
-    border: 1px solid var(--current-sq-outline);
-    padding: 8px 0;
-    display: none;
-    /* Hidden by default */
-}
-
-.sq .wpm-selector .wpm-option {
+.sq .controls .control.pause-play a {
     padding: 10px 20px;
-    cursor: pointer;
+    /* Larger tap target */
+    border-radius: 24px;
+    /* Full pill shape */
+    background-color: var(--current-sq-accent-primary);
+    color: var(--current-sq-accent-on-primary);
+    font-weight: 500;
     font-size: 14px;
-    color: var(--current-sq-text-primary);
-    transition: background-color 0.15s ease-in-out;
+    transition: background-color 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    /* Subtle shadow */
 }
 
-.sq .wpm-selector .wpm-option:hover {
-    background-color: var(--current-sq-bg-secondary);
+.sq .controls .control.pause-play a:hover {
+    background-color: color-mix(in srgb, var(--current-sq-accent-primary) 90%, black);
+    /* Darken on hover */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
 }
+
+.sq.dark-theme-active .controls .control.pause-play a:hover {
+    background-color: color-mix(in srgb, var(--current-sq-accent-primary) 90%, white);
+    /* Lighten on hover for dark */
+}
+
+.sq .controls .control.pause-play a .fa {
+    margin-right: 8px;
+    /* Space icon from text */
+    font-size: 1.1em;
+    /* Slightly larger icon */
+}
+
 
 /* Page blur effect */
 body>*:not(.sq):not(.sq-obscure) {
-    /* More specific selector for blurring */
-    transition: filter 0.3s ease-in-out;
+    transition: filter 0.25s ease-out, opacity 0.25s ease-out;
 }
 
 body.sq-page-blurred>*:not(.sq):not(.sq-obscure) {
-    filter: blur(4px) brightness(0.9);
+    filter: blur(5px) brightness(0.85);
+    /* Increased blur and dim */
+    opacity: 0.7;
+    /* Dim non-Squirt content */
+    user-select: none;
+    /* Prevent interaction with blurred content */
+    pointer-events: none;
+    /* Further prevent interaction */
 }
