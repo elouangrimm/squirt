@@ -1,276 +1,289 @@
-.sq * {
-    vertical-align: baseline;
-    font-weight: inherit;
-    font-family: inherit;
-    font-style: inherit;
-    font-size: 100%;
-    border: 0 none;
-    outline: 0;
-    padding: 0;
-    margin: 0;
-    color: inherit;
-    box-sizing: content-box;
-    -moz-box-sizing: content-box;
+/* squirt.css - Material 3 Inspired Theme */
+
+:root {
+    --sq-font-family: 'Roboto', 'Segoe UI', BlinkMacSystemFont, system-ui, -apple-system, sans-serif;
+
+    /* Light Mode (Default) */
+    --sq-bg-primary-light: #fef7ff;
+    /* Material 3 Surface */
+    --sq-bg-secondary-light: #e8def8;
+    /* Material 3 Secondary Container */
+    --sq-text-primary-light: #1d1b20;
+    /* Material 3 On Surface */
+    --sq-text-secondary-light: #49454f;
+    /* Material 3 On Surface Variant */
+    --sq-accent-primary-light: #6750a4;
+    /* Material 3 Primary */
+    --sq-accent-on-primary-light: #ffffff;
+    /* Material 3 On Primary */
+    --sq-focus-indicator-light: #cf1020;
+    /* Vivid Red */
+    --sq-outline-light: #79747e;
+    /* Material 3 Outline */
+    --sq-modal-shadow-light: 0 1px 2px rgba(0, 0, 0, 0.3), 0 2px 6px 2px rgba(0, 0, 0, 0.15);
+    /* M3 Elevation 2 */
+
+    /* Dark Mode */
+    --sq-bg-primary-dark: #1d1b20;
+    /* Material 3 Surface */
+    --sq-bg-secondary-dark: #4a4458;
+    /* Material 3 Secondary Container */
+    --sq-text-primary-dark: #e6e0e9;
+    /* Material 3 On Surface */
+    --sq-text-secondary-dark: #cac4d0;
+    /* Material 3 On Surface Variant */
+    --sq-accent-primary-dark: #d0bcff;
+    /* Material 3 Primary */
+    --sq-accent-on-primary-dark: #381e72;
+    /* Material 3 On Primary */
+    --sq-focus-indicator-dark: #ff8a80;
+    /* Lighter Red */
+    --sq-outline-dark: #938f99;
+    /* Material 3 Outline */
+    --sq-modal-shadow-dark: 0 1px 2px rgba(0, 0, 0, 0.3), 0 2px 6px 2px rgba(0, 0, 0, 0.15);
+    /* M3 Elevation 2 (often same for dark) */
+
+    --sq-blur-opacity: 0.3;
 }
 
-.sq-blur {
-    filter: blur(4px);
-    -webkit-filter: blur(4px);
-    -moz-filter: blur(4px);
-    -o-filter: blur(4px);
-    -ms-filter: blur(4px);
+.sq {
+    font-family: var(--sq-font-family);
+    color-scheme: light dark;
+    /* Allow browser to style scrollbars etc. */
+
+    /* Default to light mode variables */
+    --current-sq-bg-primary: var(--sq-bg-primary-light);
+    --current-sq-bg-secondary: var(--sq-bg-secondary-light);
+    --current-sq-text-primary: var(--sq-text-primary-light);
+    --current-sq-text-secondary: var(--sq-text-secondary-light);
+    --current-sq-accent-primary: var(--sq-accent-primary-light);
+    --current-sq-accent-on-primary: var(--sq-accent-on-primary-light);
+    --current-sq-focus-indicator: var(--sq-focus-indicator-light);
+    --current-sq-outline: var(--sq-outline-light);
+    --current-sq-modal-shadow: var(--sq-modal-shadow-light);
+}
+
+.sq.dark-theme-active {
+    --current-sq-bg-primary: var(--sq-bg-primary-dark);
+    --current-sq-bg-secondary: var(--sq-bg-secondary-dark);
+    --current-sq-text-primary: var(--sq-text-primary-dark);
+    --current-sq-text-secondary: var(--sq-text-secondary-dark);
+    --current-sq-accent-primary: var(--sq-accent-primary-dark);
+    --current-sq-accent-on-primary: var(--sq-accent-on-primary-dark);
+    --current-sq-focus-indicator: var(--sq-focus-indicator-dark);
+    --current-sq-outline: var(--sq-outline-dark);
+    --current-sq-modal-shadow: var(--sq-modal-shadow-dark);
 }
 
 .sq-obscure {
-    background-color: rgba(255, 255, 255, .8);
     position: fixed;
-    width: 100%;
-    height: 100%;
     top: 0;
     left: 0;
-    z-index: 9999999999999999999999;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, var(--sq-blur-opacity));
+    z-index: 2147483640;
+    /* High z-index */
 }
 
 .sq .modal {
     position: fixed;
-    left: 0;
-    top: 20%;
-    width: 100%;
-    height: 399px;
-
-    font-size: 48px;
-    background-color: #F6F6F6;
-    color: #333;
-    font-family: Georgia, serif;
-
-    box-shadow: 0 2px 10px rgba(0, 0, 0, .4);
-    z-index: 99999999999999999999999;
-
-    cursor: none;
-}
-
-.sq .modal .error {
-    margin: 2em;
-    font-size: .8em;
-}
-
-.sq .final-word {
-    display: none;
-    margin: 15%;
-    text-align: center;
-    width: 50%;
-    font-size: .8em !important;
+    top: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    max-width: 420px;
+    background-color: var(--current-sq-bg-primary);
+    color: var(--current-sq-text-primary);
+    border-radius: 28px;
+    box-shadow: var(--current-sq-modal-shadow);
+    z-index: 2147483641;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    /* To contain rounded corners with children */
 }
 
 .sq .reader {
-    position: absolute;
-    height: 100%;
-    left: 34%;
-    width: 46%;
-    border-left: 1px solid rgba(0, 0, 0, .4);
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 24px;
+    min-height: 120px;
+    /* Ensure space for word */
+    position: relative;
 }
 
 .sq .word-container {
-    position: absolute;
-    top: 30%;
+    font-size: 40px;
+    /* Large, clear text */
+    font-weight: 400;
+    /* Normal weight for readability */
+    line-height: 1.2;
+    position: relative;
+    height: 60px;
+    /* Fixed height to prevent layout jumps */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    margin-bottom: 10px;
+    color: var(--current-sq-text-primary);
 }
 
-.sq .focus-indicator-gap {
+.sq .word-container .word {
     position: absolute;
-    height: 111px;
-    background-color: #f6f6f6;
+    /* JS will set left position */
+    white-space: nowrap;
+    display: flex;
+    /* For ORP alignment within the word itself */
+    align-items: baseline;
+}
+
+.sq .word-container .word .orp {
+    color: var(--current-sq-focus-indicator);
+    font-weight: 500;
+    /* Slightly bolder ORP */
+}
+
+.sq .word-container .focus-indicator-gap {
+    position: absolute;
     width: 2px;
-    left: -2px;
-}
-
-.sq .controls {
-    font-family: "Helvetica Neue", "Arial", sans-serif;
-    font-size: 40%;
-    text-align: center;
-    color: rgba(0, 0, 0, .4);
-    font-weight: bold;
-    position: absolute;
-    left: 80%;
-    height: 100%;
-    width: 20%;
-    top: 0;
-    z-index: 1;
-}
-
-.sq .controls a, .sq .wpm-selector a {
-    pointer-events: none;
-}
-
-.sq .control {
-    cursor: pointer;
-    margin: 0;
-    background-color: rgba(255, 255, 255, .68);
-    height: 74px;
-    padding-top: 57px;
-    margin-bottom: 3px;
-}
-
-.sq .control:hover {
-    background-color: rgba(255, 255, 255, .9);
-}
-
-.sq .control:active {
-    background-color: rgba(230, 230, 255, 1);
-}
-
-.sq .controls a, select {
-    text-decoration: none;
-    color: inherit;
-    display: block;
-    cursor: pointer;
-}
-
-.sq .wpm-selector {
-    height: 100%;
-    position: absolute;
-    top: 0;
-    left: -400%;
-    width: 401%;
-}
-
-.sq .wpm-option {
-    margin: 0 3px 3px 0;
-    width: 32.75%;
-    height: 80px;
-    padding-top: 51px;
-    float: left;
-    background-color: rgba(255, 255, 255, 1);
-    cursor: pointer;
-}
-
-.sq .wpm-plus-50 {
-    color: rgba(0, 155, 216, 0.39);
-}
-
-.sq .wpm-option:hover, .sq .wpm-option:active {
-    background-color: #EFEFEF;
-}
-
-.sq .wpm-option a {
-    pointer-events: none;
-    font-size: 1.4em;
-}
-
-.sq .control.wpm div {
-    font-size: .8em;
-}
-
-.sq .orp {
-    color: rgb(238, 69, 69);
-}
-
-.sq .word {
-    top: 34%;
-    position: absolute;
-    font-size: 1.2em;
-    padding: 15px;
+    /* Thickness of the indicator */
+    height: 70%;
+    /* Relative to word-container height */
+    background-color: var(--current-sq-focus-indicator);
+    left: 50%;
+    top: 15%;
+    /* Vertically center it a bit */
+    transform: translateX(-50%);
+    border-radius: 1px;
 }
 
 .sq .word-prerenderer {
     visibility: hidden;
-
+    position: absolute;
+    top: -9999px;
+    left: -9999px;
+    font-size: 40px;
+    /* Match .word-container */
+    font-weight: 400;
 }
+
+.sq .final-word {
+    padding: 20px;
+    text-align: center;
+    font-size: 16px;
+    color: var(--current-sq-text-secondary);
+}
+
+.sq .final-word .error {
+    color: var(--current-sq-focus-indicator);
+    /* Use focus color for errors */
+    font-weight: 500;
+}
+
 
 .sq .keyboard-shortcuts {
-    color: #999;
-    font-size: .3em;
     position: absolute;
-    bottom: 0;
+    bottom: 12px;
+    left: 0;
     right: 0;
-    padding-right: .7em;
-    padding-bottom: .7em;
+    text-align: center;
+    font-size: 12px;
+    color: var(--current-sq-text-secondary);
+    opacity: 0.8;
+}
+
+.sq .controls {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 8px 12px;
+    background-color: var(--current-sq-bg-secondary);
+    border-top: 1px solid var(--current-sq-outline);
+    /* Subtle separator */
+    flex-shrink: 0;
+}
+
+.sq .controls .control {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    user-select: none;
+    padding: 8px 12px;
+    border-radius: 20px;
+    /* Pill shape */
+    transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+    min-width: 80px;
+    /* Ensure buttons have some width */
+    text-align: center;
+}
+
+.sq .controls .control a {
+    text-decoration: none;
+    color: var(--current-sq-text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    /* Space between icon and text */
+    font-size: 14px;
+}
+
+.sq .controls .control:hover {
+    background-color: rgba(0, 0, 0, 0.08);
+    /* Generic hover, works for light/dark */
+}
+
+.sq.dark-theme-active .controls .control:hover {
+    background-color: rgba(255, 255, 255, 0.12);
 }
 
 
-/* Mobile */
-
-@media only screen and (min-device-width : 320px) and (max-device-width : 568px) and (orientation: landscape) {
-    .sq .modal {
-        width: 100%;
-        height: 204px;
-        top: 20%;
-    }
-
-    .sq .focus-indicator-gap {
-        height: 66px;
-    }
-
-    .sq .control {
-        height: 32.3%;
-        padding-top: 0;
-        margin-bottom: 2.1%;
-        font-size: .9em;
-    }
-
-    .sq .control a {
-        padding-top: 20%;
-    }
-
-    .sq .wpm-option {
-        height: 32.3%;
-        margin: 0 0.5% 0.5% 0;
-        padding-top: 0;
-    }
-
-    .sq .wpm-option a {
-        padding-top: 13%;
-    }
-
-    .sq .word {
-        font-size: .6em;
-    }
+.sq .controls .control.wpm a {
+    color: var(--current-sq-accent-primary);
+    font-weight: 500;
 }
 
-@media only screen and (min-device-width : 320px) and (max-device-width : 568px) and (orientation: portrait) {
-    .sq .modal {
-        height: 404px;
-        top: 20%;
-    }
+.sq .wpm-selector {
+    position: absolute;
+    bottom: calc(100% + 8px);
+    /* Position above the controls bar */
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 100;
+    /* Above controls */
+    min-width: 180px;
+    background-color: var(--current-sq-bg-primary);
+    border-radius: 12px;
+    box-shadow: var(--current-sq-modal-shadow);
+    border: 1px solid var(--current-sq-outline);
+    padding: 8px 0;
+    display: none;
+    /* Hidden by default */
+}
 
-    .sq .reader {
-        height: 44%;
-        left: 45%;
-    }
+.sq .wpm-selector .wpm-option {
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 14px;
+    color: var(--current-sq-text-primary);
+    transition: background-color 0.15s ease-in-out;
+}
 
-    .sq .focus-indicator-gap {
-        height: 74px;
-    }
+.sq .wpm-selector .wpm-option:hover {
+    background-color: var(--current-sq-bg-secondary);
+}
 
-    .sq .wpm-selector {
-        left: 0;
-        top: -44%;
-        width: 100%;
-        background-color: #f6f6f6;
-    }
+/* Page blur effect */
+body>*:not(.sq):not(.sq-obscure) {
+    /* More specific selector for blurring */
+    transition: filter 0.3s ease-in-out;
+}
 
-    .sq .controls {
-        top: 44%;
-        width: 100%;
-        left: 0;
-    }
-
-    .sq .control {
-        height: 46px;
-        padding-top: 27px;
-        font-size: .9em;
-    }
-
-    .sq .wpm-option:nth-child(3n) {
-        margin-right: 0;
-    }
-
-    .sq .wpm-option {
-        height: 82px;
-        padding-top: 50px;
-        width: 32.67%;
-    }
-
-    .sq .word {
-        font-size: .6em;
-    }
+body.sq-page-blurred>*:not(.sq):not(.sq-obscure) {
+    filter: blur(4px) brightness(0.9);
 }
