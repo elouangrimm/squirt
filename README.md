@@ -1,0 +1,2 @@
+# squirt
+speed reading bookmarklet
