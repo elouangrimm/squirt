@@ -1,10 +1,10 @@
-// squirt.js - FINAL VERSION (v2 with latest requests)
+// squirt.js - CORRECTED VERSION (No Placeholders)
 (function () {
     if (!window.sq) {
         window.sq = {};
     }
 
-    sq.version = "0.0.5-final"; // Increment version
+    sq.version = "0.0.8-final"; // Increment version
     sq.host = (function () {
         var devMatch = window.location.search.match(/sq-dev=([^&]+)/);
         if (devMatch && devMatch[1]) {
@@ -17,16 +17,18 @@
                 protocol + devMatch[1] + (devMatch[1].endsWith("/") ? "" : "/")
             );
         }
-        // !!! IMPORTANT: ADJUST THIS URL TO YOUR ACTUAL HOSTING PATH !!!
+        // !!! IMPORTANT: THIS URL MUST POINT TO WHERE squirt.css and readability.js ARE HOSTED !!!
+        // Example using jsDelivr for a GitHub repo: 'https://cdn.jsdelivr.net/gh/YOUR_USERNAME/YOUR_REPO/'
+        // Replace 'elouangrimm/squirt' with your actual GitHub username and repository if using jsDelivr
         return "https://cdn.jsdelivr.net/gh/elouangrimm/squirt/";
     })();
     sq.closed = true;
 
     var nextNodeTimeoutId;
     var _globalKeydownListener = null;
-    var _globalKeyupListener = null; // For keyup
+    var _globalKeyupListener = null;
     var _steppingIntervalId = null;
-    var keySteppingSpeed = 120; // Milliseconds between steps when holding arrow key (paused)
+    var keySteppingSpeed = 100;
 
     function applyTheme() {
         var sqRoot = document.querySelector(".sq");
@@ -172,9 +174,9 @@
         }
         document.body.classList.add("sq-page-blurred");
         if (_globalKeydownListener) _globalKeydownListener();
-        if (_globalKeyupListener) _globalKeyupListener(); // Remove old keyup listener
+        if (_globalKeyupListener) _globalKeyupListener();
         _globalKeydownListener = on(document, "keydown", handleKeydown);
-        _globalKeyupListener = on(document, "keyup", handleKeyup); // Add keyup listener
+        _globalKeyupListener = on(document, "keyup", handleKeyup);
     }
 
     function hideGUI() {
@@ -188,7 +190,7 @@
         if (_globalKeyupListener) {
             _globalKeyupListener();
             _globalKeyupListener = null;
-        } // Remove keyup listener
+        }
 
         sq.closed = true;
         if (nextNodeTimeoutId) clearTimeout(nextNodeTimeoutId);
@@ -367,7 +369,6 @@
             finalWordContainer = null,
             readerEl = null;
         var wpmDisplayElement = null;
-        var pausePlayLink = null;
 
         function initDomRefsAndGUI() {
             var existingSquirt = document.querySelector(".sq");
@@ -383,7 +384,7 @@
             prerenderer = makeDiv({ class: "word-prerenderer" }, wordContainer);
             finalWordContainer = makeDiv({ class: "final-word" }, modal);
             makeDiv({ class: "keyboard-shortcuts" }, readerEl).innerHTML =
-                "⌫ Space, Esc, ↑, ↓, ← मशीन;, →";
+                "Space: Play/Pause    Esc: Close    ↑↓: WPM    ←→: Step (Paused)";
 
             on(obscure, "click", function (e) {
                 e.stopPropagation();
@@ -391,17 +392,7 @@
             });
 
             wpmDisplayElement = makeDiv({ class: "wpm-display" }, controlsEl);
-
-            var pausePlayControl = makeEl(
-                "div",
-                { class: "sq control pause-play" },
-                controlsEl
-            );
-            pausePlayLink = makeEl("a", { href: "#" }, pausePlayControl);
-            on(pausePlayControl, "click", function (e) {
-                e.preventDefault();
-                dispatch("squirt.play.toggle");
-            });
+            // Controls div now primarily for WPM display; can be centered or styled as needed via CSS
 
             function updateWpmDisplay(newWpmVal) {
                 currentWpm = Math.max(50, Math.min(2000, Number(newWpmVal)));
@@ -412,14 +403,6 @@
             }
             updateWpmDisplay(currentWpm);
 
-            function updatePlayPauseIcon() {
-                if (pausePlayLink)
-                    pausePlayLink.innerHTML = sq.paused
-                        ? "<i class='fa fa-play'></i> Play"
-                        : "<i class='fa fa-pause'></i> Pause";
-            }
-            updatePlayPauseIcon();
-
             on("squirt.wpm", function (e) {
                 if (e && e.detail && typeof e.detail.value !== "undefined")
                     updateWpmDisplay(e.detail.value);
@@ -428,13 +411,13 @@
                 if (e && e.detail && typeof e.detail.value === "number")
                     updateWpmDisplay(currentWpm + e.detail.value);
             });
+
             on("squirt.play.toggle", function () {
                 sq.paused ? dispatch("squirt.play") : dispatch("squirt.pause");
             });
 
             on("squirt.play", function (e) {
                 sq.paused = false;
-                updatePlayPauseIcon();
                 if (_steppingIntervalId) {
                     clearInterval(_steppingIntervalId);
                     _steppingIntervalId = null;
@@ -443,7 +426,6 @@
             });
             on("squirt.pause", function () {
                 sq.paused = true;
-                updatePlayPauseIcon();
                 if (nextNodeTimeoutId) clearTimeout(nextNodeTimeoutId);
             });
             on("squirt.rewind", function (e) {
@@ -456,16 +438,21 @@
                 var wordsToRewind = Math.floor(
                     (secondsToRewind * 1000) / (intervalMs || 60000 / 400)
                 );
+
                 nodeIdx = Math.max(-1, nodeIdx - wordsToRewind);
-                var rewindCount = 0;
-                while (
-                    nodeIdx > 0 &&
-                    nodes[nodeIdx + 1] &&
-                    !nodes[nodeIdx + 1].word.match(/\.|\?|!|\n/) &&
-                    rewindCount < 50
-                ) {
-                    nodeIdx--;
-                    rewindCount++;
+
+                if (wordsToRewind > 2) {
+                    var rewindCount = 0;
+                    while (
+                        nodeIdx > 0 &&
+                        nodes[nodeIdx + 1] &&
+                        nodes[nodeIdx + 1].word &&
+                        !nodes[nodeIdx + 1].word.match(/\.|\?|!|\n/) &&
+                        rewindCount < 30
+                    ) {
+                        nodeIdx--;
+                        rewindCount++;
+                    }
                 }
                 advanceWordDisplay(true);
             });
@@ -478,20 +465,26 @@
                     typeof e.detail.direction !== "number"
                 )
                     return;
+
                 var newIndex = nodeIdx + e.detail.direction;
 
                 if (newIndex < 0) {
-                    // Stepped back before first word
-                    nodeIdx = -1; // Keep it at -1, effectively "before start"
+                    nodeIdx = -1;
                     if (lastNode && lastNode.parentNode) lastNode.remove();
                     lastNode = null;
-                    // Optionally clear word container text or show placeholder
-                    if (wordContainer)
-                        wordContainer.innerHTML =
-                            '<div class="focus-indicator-gap"></div>'; // Reset word container
+                    if (wordContainer) {
+                        var gap = wordContainer.querySelector(
+                            ".focus-indicator-gap"
+                        );
+                        var prerenderDiv =
+                            wordContainer.querySelector(".word-prerenderer");
+                        wordContainer.innerHTML = "";
+                        if (gap) wordContainer.appendChild(gap);
+                        if (prerenderDiv)
+                            wordContainer.appendChild(prerenderDiv);
+                    }
                 } else if (newIndex >= nodes.length) {
-                    // Stepped past last word
-                    nodeIdx = nodes.length - 1; // Keep at last valid index for display
+                    nodeIdx = nodes.length;
                     if (finalWordContainer) {
                         finalWordContainer.innerHTML = "<div>All done!</div>";
                         finalWordContainer.style.display = "block";
@@ -600,43 +593,45 @@
                 return;
             }
             nodeIdx = -1;
-            dispatch("squirt.play", { jumped: true }); // Use object for detail
+            if (finalWordContainer) finalWordContainer.style.display = "none";
+            if (readerEl) readerEl.style.display = "block";
+            dispatch("squirt.play", { jumped: true });
         }
 
         function displayWordAtIndex(idx) {
             if (lastNode && lastNode.parentNode) lastNode.remove();
+
             if (!nodes || idx < 0 || idx >= nodes.length) {
-                // If index is out of bounds (e.g. after stepping beyond start/end while paused)
-                // ensure wordContainer is cleared or reset.
                 if (wordContainer && (!nodes || idx < 0)) {
-                    wordContainer.innerHTML =
-                        '<div class="focus-indicator-gap"></div>'; // Reset
+                    var gap = wordContainer.querySelector(
+                        ".focus-indicator-gap"
+                    );
+                    var prerenderDiv =
+                        wordContainer.querySelector(".word-prerenderer");
+                    wordContainer.innerHTML = "";
+                    if (gap) wordContainer.appendChild(gap.cloneNode(true));
+                    if (prerenderDiv)
+                        wordContainer.appendChild(prerenderDiv.cloneNode(true));
                 }
                 return;
             }
 
             lastNode = nodes[idx];
             if (!wordContainer || !lastNode) return;
-            // Ensure wordContainer is clean except for focus-indicator-gap before appending
-            while (
-                wordContainer.firstChild &&
-                wordContainer.firstChild.className !== "focus-indicator-gap" &&
-                wordContainer.firstChild.className !== "word-prerenderer"
-            ) {
-                wordContainer.removeChild(wordContainer.firstChild);
-            }
-            // Find prerenderer and insert before it, or append if not found (should exist)
-            var prerendererRef =
-                wordContainer.querySelector(".word-prerenderer");
-            if (prerendererRef) {
-                wordContainer.insertBefore(lastNode, prerendererRef);
-            } else {
-                wordContainer.appendChild(lastNode);
-            }
+
+            var tempFragment = document.createDocumentFragment();
+            var gap = wordContainer.querySelector(".focus-indicator-gap");
+            var prerenderDiv = wordContainer.querySelector(".word-prerenderer");
+
+            wordContainer.innerHTML = ""; // Clear previous word content
+            if (gap) tempFragment.appendChild(gap); // Add gap first
+            tempFragment.appendChild(lastNode); // Then the current word
+            if (prerenderDiv) tempFragment.appendChild(prerenderDiv); // Then prerenderer div
+            wordContainer.appendChild(tempFragment);
 
             if (typeof lastNode.center === "function") lastNode.center();
             if (lastNode.instructions) invoke(lastNode.instructions);
-            prerenderNextWord(); // Renamed
+            prerenderNextWord();
         }
 
         function prerenderNextWord() {
@@ -649,7 +644,7 @@
                 if (prerenderer)
                     while (prerenderer.firstChild) {
                         prerenderer.removeChild(prerenderer.firstChild);
-                    } // Clear if no next word
+                    }
                 return;
             }
             var wordNodeToPrerender = nodes[nodeIdx + 1];
@@ -757,13 +752,25 @@
                     if (finalWordContainer)
                         finalWordContainer.style.display = "none";
                     if (readerEl) readerEl.style.display = "block";
+                    if (wordContainer) {
+                        // Ensure word container is reset for new text
+                        var gap = wordContainer.querySelector(
+                            ".focus-indicator-gap"
+                        );
+                        var prerenderDiv =
+                            wordContainer.querySelector(".word-prerenderer");
+                        wordContainer.innerHTML = "";
+                        if (gap) wordContainer.appendChild(gap.cloneNode(true));
+                        if (prerenderDiv)
+                            wordContainer.appendChild(
+                                prerenderDiv.cloneNode(true)
+                            );
+                    }
                     loadTextAndStart();
                 }
             } else {
-                // If already open, ensure it's visible and perhaps reset text or unpause
-                showGUI(); // Ensure it's visible if somehow hidden without state change
-                if (sq.paused) dispatch("squirt.play"); // If it was paused, play
-                // else, if already playing, maybe restart text or do nothing
+                showGUI();
+                if (sq.paused) dispatch("squirt.play");
             }
         });
         if (window.matchMedia) {
